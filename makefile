@@ -25,6 +25,12 @@ obj/heap.o : lib-src/heap.o include/heap.h
 obj/array.o : lib-src/array.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 
+obj/array-test.o : test-src/array-test.c obj/array.o
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+array-test : obj/array-test.o obj/array.o
+	$(CC) $(CFLAGS) -o bin/$@ $^
+
 clean :
 	rm -rv bin/*
 	rm -rv obj/*

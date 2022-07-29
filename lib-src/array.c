@@ -1,24 +1,27 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-void printIntArray (int *a, int dim) {
-	int i;
+void printIntArray(int *array, int length) {
 	printf("[");
-	for (i = 0; i < dim - 1; i++)
-		printf("%d, ", a[i]);
-	printf("%d]\n", a[dim - 1]);
+	for (int i = 0; i < length - 1; i++) {
+		printf("%d, ", array[i]);
+	}
+	printf("%d]\n", array[length - 1]);
 }
 
-void printIntArrayReverse (int *a, int dim) {
-	int i;
+void printIntArrayReverse(int *array, int length) {
 	printf("[");
-	for (i = dim - 1; i > 0; i--)
-		printf("%d, ", a[i]);
-	printf("%d]\n", a[0] 
+	for (int i = length - 1; i > 0; i--) {
+		printf("%d, ", array[i]);
+	}
+	printf("%d]\n", array[0]);
+} 
 
-void cloneIntArray (int **temp, int *a, int dim) {
-	int i, *aux;
-	aux = malloc(sizeof(int)*dim);
-	for (i = 0; i < dim; i++)
-		aux[i] = a[i];
-	*temp = aux;
+int* copyIntArray(int *array, int length) {
+	int *array_copy;
+	array_copy = malloc(sizeof(int) * length);
+	for (int i = 0; i < length; i++) {
+		array_copy[i] = array[i];
+	}
+	return array_copy;
 }

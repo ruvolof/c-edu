@@ -1,10 +1,10 @@
 #ifndef array
 #define array
 
-void printIntArray (int *a, int dim);
+void printIntArray (int *array, int length);
 
-void printIntArrayReverse (int *a, int dim);
+void printIntArrayReverse (int *array, int length);
 
-void cloneIntArray(int **temp, int *a, int dim);
+int* copyIntArray(int *array, int length);
 
 #endif
