@@ -1,13 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-
-typedef struct IntBinaryTreeNode {
-	int val;
-	struct IntBinaryTreeNode* left;
-	struct IntBinaryTreeNode* right;
-} IntBinaryTreeNode;
-
-typedef IntBinaryTreeNode* IntBinaryTree;
+#include "../include/binary_tree.h"
 
 IntBinaryTree newLeaf(int val) {
 	IntBinaryTree new = (IntBinaryTree) malloc(sizeof(IntBinaryTreeNode));
@@ -15,6 +8,15 @@ IntBinaryTree newLeaf(int val) {
 	new->left = NULL;
 	new->right = NULL;
 	return new;
+}
+
+void freeBinaryTree(IntBinaryTreeNode* root) {
+	if (root == NULL) {
+		return;
+	}
+	freeBinaryTree(root->left);
+	freeBinaryTree(root->right);
+	free(root);
 }
 
 IntBinaryTree insertIntSearchBinaryTree(IntBinaryTree root, int val) {
@@ -112,8 +114,6 @@ IntBinaryTree searchIntBinaryTree (IntBinaryTree root, int val){
  * This is a special binary search tree that grant to be height
  * no more than log n, where n is the number of leaf.
  */
-
-typedef IntBinaryTreeNode* IntAVLTree;
 
 IntAVLTree clockwiseRotation(IntAVLTree node) {
 	IntAVLTree temp = node->left;

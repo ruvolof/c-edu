@@ -22,13 +22,13 @@ obj/sort.o : lib-src/sort.c obj/heap.o include/sort.h include/heap.h
 obj/heap.o : lib-src/heap.o include/heap.h
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-obj/array.o : lib-src/array.c
+obj/array.o : lib-src/array.c include/array.h
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-obj/array-test.o : test-src/array-test.c obj/array.o
+obj/array_test.o : test-src/array_test.c obj/array.o
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-array-test : obj/array-test.o obj/array.o
+array_test : obj/array_test.o obj/array.o
 	$(CC) $(CFLAGS) -o bin/$@ $^
 
 obj/binary_tree.o : lib-src/binary_tree.c include/binary_tree.h

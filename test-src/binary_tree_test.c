@@ -40,6 +40,9 @@ int main () {
 		}
 		printf("\n");
 	}
+
+	freeBinaryTree(root);
+	freeBinaryTree(avl_root);
 	
 	return 0;
 }

@@ -1,32 +1,33 @@
 #ifndef binarytree
 #define binarytree
 
-typedef struct intBinaryTreeNode IntBinaryTreeNode;
+typedef struct IntBinaryTreeNode {
+	int val;
+	struct IntBinaryTreeNode* left;
+	struct IntBinaryTreeNode* right;
+} IntBinaryTreeNode;
 
 typedef IntBinaryTreeNode* IntBinaryTree;
-
-IntBinaryTree newLeaf(int val);
-
-IntBinaryTree insertIntSearchBinaryTree(IntBinaryTree root, int val);
-
-void dumpIntBinaryTree(IntBinaryTree root);
-
-void printIntBinaryTreePreorderVisit(IntBinaryTree root);
-
-void printIntBinaryTreeInorderVisit(IntBinaryTree root);
-
-void printIntBinaryTreePostorderVisit(IntBinaryTree root);
-
-int getBinaryTreeHeight(IntBinaryTree root);
-
-IntBinaryTree searchIntBinaryTree (IntBinaryTree root, int val);
-
 typedef IntBinaryTreeNode* IntAVLTree;
 
-IntAVLTree clockwiseRotation (IntAVLTree root);
+extern IntBinaryTree newLeaf(int val);
 
-IntAVLTree counterClockwiseRotation (IntAVLTree root);
+extern void freeBinaryTree(IntBinaryTreeNode* root);
 
-IntAVLTree insertIntAVLTree (IntAVLTree root, int val);
+extern IntBinaryTree insertIntSearchBinaryTree(IntBinaryTree root, int val);
+
+extern void dumpIntBinaryTree(IntBinaryTree root);
+
+extern void printIntBinaryTreePreorderVisit(IntBinaryTree root);
+
+extern void printIntBinaryTreeInorderVisit(IntBinaryTree root);
+
+extern void printIntBinaryTreePostorderVisit(IntBinaryTree root);
+
+extern int getBinaryTreeHeight(IntBinaryTree root);
+
+extern IntBinaryTree searchIntBinaryTree (IntBinaryTree root, int val);
+
+extern IntAVLTree insertIntAVLTree (IntAVLTree root, int val);
 
 #endif
