@@ -31,6 +31,15 @@ obj/array-test.o : test-src/array-test.c obj/array.o
 array-test : obj/array-test.o obj/array.o
 	$(CC) $(CFLAGS) -o bin/$@ $^
 
+obj/binary_tree.o : lib-src/binary_tree.c include/binary_tree.h
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+obj/binary_tree_test.o : test-src/binary_tree_test.c obj/binary_tree.o
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+binary_tree_test : obj/binary_tree_test.o obj/binary_tree.o
+	$(CC) $(CFLAGS) -o bin/$@ $^
+
 clean :
 	rm -rv bin/*
 	rm -rv obj/*
