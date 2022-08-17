@@ -8,8 +8,22 @@ int main() {
   int* array_copy;
 
   printIntArray(test_array, 5);
+  printf("\n");
   printIntArrayReverse(test_array, 5);
+  printf("\n");
   array_copy = copyIntArray(test_array, 5);
   printIntArray(array_copy, 5);
+  printf("\n");
   free(array_copy);
+
+  int width = 6;
+  int height = 5;
+  int** matrix = makeIntMatrix(width, height);
+  printIntMatrix(matrix, width, height);
+  for (int i = 0; i < height; i++) {
+    for (int j = 0; j < width; j++) {
+      matrix[i][j] = 1;
+    }
+  }
+  printIntMatrix(matrix, width, height);
 }
