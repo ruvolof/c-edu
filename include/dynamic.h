@@ -1,12 +1,12 @@
 #ifndef dynamic
 #define dynamic
 
-int LCS (char *a, char *b, int **mat);
+extern int LongestCommonSequence(char* a, char* b);
 
-int Partition (int *a, int dim, int **mat);
+extern int Partition(int* nums, int length);
 
-int Knapsack (int *values, int *weight, int dim, int capacity, int **mat);
+extern int Knapsack(int *values, int *weight, int dim, int capacity, int **mat);
 
-int EditDistance (char *a, char *b, int **mat);
+extern int EditDistance(char *a, char *b, int **mat);
 
 #endif

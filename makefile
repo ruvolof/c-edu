@@ -1,14 +1,14 @@
 CC=gcc
 CFLAGS=-Wall -g -O -pedantic -Wformat=2 -Wextra -lm
 
-dynamic-test : obj/dynamic-test.o obj/dynamic.o
-	$(CC) $(CFLAGS) -o bin/$@ $^
+obj/dynamic.o : lib-src/dynamic.c include/dynamic.h include/array.h
+	$(CC) $(CFLAGS) -o $@ -c $<
 
 obj/dynamic-test.o : test-src/dynamic-test.c include/dynamic.h
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-obj/dynamic.o : lib-src/dynamic.c include/dynamic.h
-	$(CC) $(CFLAGS) -o $@ -c $<
+dynamic-test : obj/dynamic-test.o obj/dynamic.o obj/array.o
+	$(CC) $(CFLAGS) -o bin/$@ $^
 
 sort-test : obj/sort-test.o obj/sort.o obj/heap.o obj/array.o
 	$(CC) $(CFLAGS) -o bin/$@ $^

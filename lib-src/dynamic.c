@@ -1,50 +1,65 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "../include/array.h"
 #include "../include/dynamic.h"
 
-int LCS (char *a, char *b, int **mat) {
-	int dim_a = strlen(a) + 1;
-	int dim_b = strlen(b) + 1;
-	int i, j, *m;
-
-	m = (int*) malloc(sizeof(int) * dim_a * dim_b);
-	for (i = 0; i < dim_a * dim_b; i++)
-		m[i] = 0;
-	for (i = 1; i < dim_a; i++) {
-		for (j = 1; j < dim_b; j++) {
-			if (strncmp(&a[i-1], &b[j-1], 1) == 0)
-				m[i * dim_b + j] = m[(i - 1) * dim_b + (j - 1)] + 1;
-			else if (m[i * dim_b + (j - 1)] > m[(i - 1) * dim_b + j])
-				m[i * dim_b + j] = m[i * dim_b + (j - 1)];
-			else
-				m[i * dim_b + j] = m[(i - 1) * dim_b + j];
+int LongestCommonSequence(char *a, char *b) {
+	int len_a = strlen(a) + 1;
+	int len_b = strlen(b) + 1;
+	int results[len_a][len_b];
+	for (int i = 0; i < len_a; i++) {
+		for (int j = 0; j < len_b; j++) {
+			results[i][j] = 0;
 		}
 	}
-	*mat = m;
-	return m[dim_a * dim_b - 1];
+	for (int i = 1; i < len_a; i++) {
+		for (int j = 1; j < len_b; j++) {
+			if (strncmp(&a[i-1], &b[j-1], 1) == 0) {
+				results[i][j] = results[i-1][j-1] + 1;
+			}
+			else if (results[i][j-1] > results[i-1][j]) {
+				results[i][j] = results[i][j-1];
+			}
+			else {
+				results[i][j] = results[i-1][j];
+			}
+		}
+	}
+	return results[len_a-1][len_b-1];
 }
 
-int Partition (int *a, int dim, int **mat) {
-	int s, i, j, *m;
-	for (i = 0, s = 0; i < dim; i++)
-		s += a[i];
-	s /= 2;
-	m = (int*) malloc(sizeof(int) * (dim + 1) * (s + 1));
-	for (i = 0; i < (dim + 1) * (s + 1); i++)
-		m[i] = 0;
-	m[0] = 1;
-	for (i = 1; i < dim + 1; i++) {
-		for (j = 0; j < s + 1; j++) {
-			if (m[(i - 1) * (s + 1) + j])
-				m[i * (s + 1) + j] = 1;
-			else if (j >= a[i - 1] && m[(i - 1) * (s + 1) + (j - a[i - 1])])
-				m[i * (s + 1) + j] = 1;
+int Partition(int* nums, int length) {
+	int array_sum = 0;
+	for(int i = 0; i < length; i++)
+		array_sum += nums[i];
+	if (array_sum % 2 != 0) {
+		return 0;
+	}
+	int target_sum = array_sum / 2;
+	int results[target_sum+1][length+1];
+	for (int i = 0; i < target_sum + 1; i++) {
+		for (int j = 0; j < length + 1; j++) {
+			if (i == 0) {
+				results[i][j] = 1;
+			}
+			else {
+				results[i][j] = 0;
+			}
 		}
 	}
-	printf("\n");
-	*mat = m;
-	return m[(dim + 1) * (s + 1) - 1];
+	for (int i = 1; i < target_sum + 1; i++) {
+		for (int j = 1; j < length + 1; j++) {
+			int current = nums[j-1];
+			if (i >= current && results[i-current][j-1]) {
+				results[i][j] = 1;
+			}
+			else {
+				results[i][j] = results[i][j-1];
+			}
+		}
+	}
+	return results[target_sum][length];
 }
 
 int Knapsack (int *values, int *weight, int dim, int capacity, int **mat) {
