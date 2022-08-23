@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include "../include/array.h"
 #include "../include/dynamic.h"
 
 int main() {
@@ -18,7 +19,7 @@ int main() {
 	}
 
 	int partition_test_array[5] = {1, 3, 5, 7, 2}; 
-	printf("Partition({1, 3, 5, 7, 2}) = %d\n", 
+	printf("\nPartition({1, 3, 5, 7, 2}) = %d\n", 
 				 Partition(partition_test_array, 5));
 	partition_test_array[4] = 9; 
 	printf("Partition({1, 3, 5, 7, 9}) = %d\n", 
@@ -26,4 +27,21 @@ int main() {
 	partition_test_array[0] = 6; 
 	printf("Partition({6, 3, 5, 7, 9}) = %d\n", 
 				 Partition(partition_test_array, 5));
+
+	int knapsack_values[5] = {2, 4, 7, 1, 5};
+	int knapsack_weights[5] = {1, 3, 5, 1, 5};
+	printf("\nKnapsack Problem:\n");
+	printf("Values -> ");
+	printIntArray(knapsack_values, 5);
+	printf("\n");
+	printf("Weights -> ");
+	printIntArray(knapsack_weights, 5);
+	printf("\n");
+	for (int i = 0; i < 11; i++) {
+		int knapsack_result = Knapsack(knapsack_values,
+																	 knapsack_weights,
+																	 5, 
+																	 i);
+		printf("Capacity %d: %d\n", i, knapsack_result);																	 
+	}
 }

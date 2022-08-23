@@ -4,7 +4,7 @@
 #include "../include/array.h"
 #include "../include/dynamic.h"
 
-int LongestCommonSequence(char *a, char *b) {
+int LongestCommonSequence(char* a, char* b) {
 	int len_a = strlen(a) + 1;
 	int len_b = strlen(b) + 1;
 	int results[len_a][len_b];
@@ -62,23 +62,28 @@ int Partition(int* nums, int length) {
 	return results[target_sum][length];
 }
 
-int Knapsack (int *values, int *weight, int dim, int capacity, int **mat) {
-	int *m, i, j, val;
-	m = (int*) malloc(sizeof(int) * (dim + 1) * (capacity + 1));
-	for (i = 0; i < (dim + 1) * (capacity + 1); i++)
-		m[i] = 0;
-	for (i = 1; i < dim + 1; i++) {
-		for (j = 1; j < capacity + 1; j++) {
-			m[i * (capacity + 1) + j] = m[(i - 1) * (capacity + 1) + j];
-			if (j >= weight[i - 1]) {
-				val = m[(i - 1) * (capacity + 1) + (j - weight[i - 1])] + values[i - 1];
-				if (val > m[i * (capacity + 1) + j])
-					m[i * (capacity + 1) + j] = val;
+int Knapsack(int* values, int* weights, int length, int capacity) {
+	if (!capacity) {
+		return 0;
+	}
+	int results[length+1][capacity+1];
+	for (int i = 0; i < length + 1; i++) {
+		for (int j = 0; j < capacity + 1; j++) {
+			results[i][j] = 0;
+		}
+	}
+	for (int i = 1; i < length + 1; i++) {
+		for (int j = 1; j < capacity + 1; j++) {
+			results[i][j] = results[i-1][j];
+			if (j >= weights[i-1]) {
+				int val = results[i-1][j-weights[i-1]] + values[i-1];
+				if (val > results[i][j]) {
+					results[i][j] = val;
+				}
 			}
 		}
 	}
-	*mat = m;
-	return m[(dim + 1) * (capacity + 1) - 1];
+	return results[length][capacity];
 }
 
 int EditDistance (char *a, char *b, int **mat) {
