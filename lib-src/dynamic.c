@@ -86,29 +86,36 @@ int Knapsack(int* values, int* weights, int length, int capacity) {
 	return results[length][capacity];
 }
 
-int EditDistance (char *a, char *b, int **mat) {
-	int i, j, cost, min;
-	int *m = NULL;
-	int dim_a = strlen(a) + 1;
-	int dim_b = strlen(b) + 1;
-	m = (int*) malloc(sizeof(int) * (dim_a + 1) * (dim_b + 1));
-	for (i = 0; i < dim_a; i++)
-		m[i] = i;
-	for (i = 0; i < dim_b; i++)
-		m[i * (dim_a)] = i;
-	for (i = 1; i < dim_b; i++) 
-		for (j = 1; j < dim_a; j++) {
-			if (strncmp(&a[i - 1], &b[j - 1], 1) == 0)
-				cost = 0;
-			else
-				cost = 1;
-			min = m[(i - 1) * dim_a + j] + 1;
-			if (min > m[i * dim_a + (j - 1)] + 1)
-				min = m[i * dim_a + (j - 1)] + 1;
-			if (min > m[(i - 1) * dim_a + (j - 1)] + cost)
-				min = m[(i - 1) * dim_a + (j - 1)] + cost;
-			m[i * dim_a + j] = min;
+int EditDistance(char* a, char* b) {
+	int len_a = strlen(a) + 1;
+	int len_b = strlen(b) + 1;
+	int results[len_b][len_a];
+	for (int i = 0; i < len_b; i++) {
+		for (int j = 0; j < len_a; j++) {
+			results[i][j] = 0;
 		}
-	*mat = m;
-	return m[dim_a * dim_b - 1];
+	}
+	for (int i = 0; i < len_a; i++) {
+		results[0][i] = i;
+	}
+	for (int i = 0; i < len_b; i++) {
+		results[i][0] = i;
+	}
+	for (int i = 1; i < len_b; i++) {
+		for (int j = 1; j < len_a; j++) {
+			int cost = 1;
+			if (strncmp(&a[i-1], &b[j-1], 1) == 0) {
+				cost = 0;
+			}
+			int min = results[i-1][j] + 1;
+			if (min > results[i][j-1] + 1) {
+				min = results[i][j-1] + 1;
+			}
+			if (min > results[i-1][j-1] + cost) {
+				min = results[i-1][j-1] + cost;
+			}
+			results[i][j] = min;
+		}
+	}
+	return results[len_b-1][len_a-1];
 }
