@@ -58,6 +58,15 @@ obj/stack_test.o : test-src/stack_test.c obj/stack.o
 stack_test : obj/stack_test.o obj/stack.o obj/list.o
 	$(CC) $(CFLAGS) -o bin/$@ $^
 
+obj/queue.o : lib-src/queue.c include/queue.h include/list.h
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+obj/queue_test.o : test-src/queue_test.c obj/queue.o
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+queue_test : obj/queue_test.o obj/queue.o obj/list.o
+	$(CC) $(CFLAGS) -o bin/$@ $^
+
 clean :
 	rm -rv bin/*
 	rm -rv obj/*

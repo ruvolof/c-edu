@@ -1,10 +1,15 @@
-#ifndef queue.h
-#define queue.h
+#ifndef queue_lib
+#define queue_lib
 
-IntList enqueueQueueIntList (IntList l, int val);
+#include "../include/list.h"
+#include "../include/stack.h"
 
-IntList dequeueQueueIntList (IntList l, IntList *ret);
+typedef IntListNode* IntQueue;
 
-int emptyQueueIntList (IntList l);
+extern void pushIntQueue(IntQueue* queue, int val);
+
+extern IntPtr popIntQueue(IntQueue* queue);
+
+extern int isEmptyQueue(IntQueue queue);
 
 #endif
