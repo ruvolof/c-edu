@@ -40,6 +40,15 @@ obj/binary_tree_test.o : test-src/binary_tree_test.c obj/binary_tree.o
 binary_tree_test : obj/binary_tree_test.o obj/binary_tree.o
 	$(CC) $(CFLAGS) -o bin/$@ $^
 
+obj/list.o : lib-src/list.c include/list.h
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+obj/list_test.o : test-src/list_test.c obj/list.o
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+list_test : obj/list_test.o obj/list.o obj/array.o
+	$(CC) $(CFLAGS) -o bin/$@ $^
+
 clean :
 	rm -rv bin/*
 	rm -rv obj/*

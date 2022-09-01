@@ -1,24 +1,29 @@
-#ifndef list
-#define list
+#ifndef list_lib
+#define list_lib
 
-typedef struct elementIntList ElementIntList;
+typedef struct intListNode {
+	int val;
+	struct intListNode* next;
+} IntListNode;
 
-typedef ElementIntList* IntList;
+typedef IntListNode* IntList;
 
-IntList createIntList (int val);
+extern IntList createIntList(int val);
 
-IntList insertIntListHead (IntList l, int val);
+extern IntList insertIntListHead(IntList list, int val);
 
-IntList insertIntListTail (IntList l, int val);
+extern IntList insertIntListTail(IntList list, int val);
 
-IntList removeIntListByVal (IntList l, int val);
+extern IntList removeIntListByVal(IntList list, int val);
 
-IntList removeIntListByPosition (IntList l, int pos, IntList *ret);
+extern IntList removeIntListByIndex(IntList list, int index);
 
-void printIntList (IntList l);
+extern void printIntList(IntList list);
 
-IntList searchIntList (IntList l, int val);
+extern IntList searchIntList(IntList list, int val);
 
-int lengthList (IntList l);
+extern int getListLength(IntList list);
+
+extern void freeList(IntList list);
 
 #endif
