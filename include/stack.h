@@ -1,10 +1,18 @@
-#ifndef stack.h
-#define stack.h
+#ifndef stack_lib
+#define stack_lib
 
-IntList pushStackIntList (IntList l, int val);
+#include "list.h"
 
-IntList popStackIntList (IntList l, IntList *ret);
+typedef IntListNode* IntStack;
 
-int emptyStackIntList (IntList l);
+typedef int* IntPtr;
+
+extern void pushIntStack(IntStack* stack, int val);
+
+extern IntPtr popIntStack(IntStack* stack);
+
+extern int isEmptyIntStack(IntStack stack);
+
+extern IntPtr topIntStack(IntStack stack);
 
 #endif

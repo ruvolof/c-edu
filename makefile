@@ -49,6 +49,15 @@ obj/list_test.o : test-src/list_test.c obj/list.o
 list_test : obj/list_test.o obj/list.o obj/array.o
 	$(CC) $(CFLAGS) -o bin/$@ $^
 
+obj/stack.o : lib-src/stack.c include/stack.h include/list.h
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+obj/stack_test.o : test-src/stack_test.c obj/stack.o
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+stack_test : obj/stack_test.o obj/stack.o obj/list.o
+	$(CC) $(CFLAGS) -o bin/$@ $^
+
 clean :
 	rm -rv bin/*
 	rm -rv obj/*
