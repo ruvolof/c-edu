@@ -1,141 +1,158 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
-#include "list.h"
+#include "../include/hash.h"
+#include "../include/list.h"
 
 #define PRIME 426389
 
-typedef struct intOpenHashTable {
-	int *table;
-	int *free;
-	int *deleted;
-	int a;
-	int b;
-	int size;
-	int full;
-} IntOpenHashTable;
-
-IntOpenHashTable newIntOpenHashTable (int n) {
-	IntOpenHashTable hash;
-	int i;
+IntOpenHashSet* newIntOpenHashSet(int size) {
+	IntOpenHashSet* set = (IntOpenHashSet*)malloc(sizeof(IntOpenHashSet));
+	set->size = 2 * size;
+	set->values = (int*) malloc(sizeof(int) * set->size);
+	set->is_free = (int*) malloc(sizeof(int) * set->size);
+	for (int i = 0; i < set->size; i++) {
+		set->is_free[i] = 1;
+		set->values[i] = 0;
+	}
 	srand(time(NULL));
-	hash.size = 2 * n;
-	hash.table = (int*) malloc(sizeof(int) * hash.size);
-	hash.free = (int*) malloc(sizeof(int) * hash.size);
-	for (i = 0; i < hash.size; i++)
-		hash.free[i] = 0;
-	hash.deleted = (int*) malloc(sizeof(int) * hash.size);
-	for (i = 0; i < hash.size; i++)
-		hash.deleted[i] = 0;
-	hash.a = rand() % 10000;
-	hash.b = rand() % 10000;
-	hash.full = 0;
-	return hash;
+	set->param_mul = rand() % 10000;
+	set->param_add = rand() % 10000;
+	set->count = 0;
+	return set;
 }
 
-int getOpenHash (IntOpenHashTable hash, int val) {
-	return ((hash.a * val + hash.b) % PRIME) % hash.size;
+void freeOpenHashSet(IntOpenHashSet* set) {
+	free(set->values);
+	free(set->is_free);
+	free(set);
 }
 
-void insertIntOpenHashTable (IntOpenHashTable *hash, int val) {
-	int val_hash = getOpenHash(*hash, val);
-	while (hash->free[val_hash] == 1 && hash->table[val_hash] != val)
-		val_hash = (val_hash + 1) % hash->size;
-	if (hash->table[val_hash] != val) {
-		hash->table[val_hash] = val;
-		hash->deleted[val_hash] = 0;
-		hash->free[val_hash] = 1;
-		hash->full++;
+int computeHash(int param_mul, int param_add, int hash_size, int val) {
+	return ((param_mul * val + param_add) % PRIME) % hash_size;
+}
+
+void addIntOpenHashSet(IntOpenHashSet* set, int val) {
+	int val_hash = computeHash(set->param_mul,
+														 set->param_add,
+														 set->size,
+														 val);
+	while (!(set->is_free[val_hash]) && set->values[val_hash] != val) {
+		val_hash = (val_hash + 1) % set->size;
+	}
+	if (set->is_free[val_hash]) {
+		set->values[val_hash] = val;
+		set->is_free[val_hash] = 0;
+		set->count++;
 	}
 }
 
-void removeIntOpenHashTable (IntOpenHashTable *hash, int val) {
-	int val_hash = getOpenHash(*hash, val);
-	while ((hash->free[val_hash] == 1 || hash->deleted[val_hash] == 1) && hash->table[val_hash] != val)
-		val_hash = (val_hash + 1) % hash->size;
-	if (hash->table[val_hash] == val) {
-		hash->free[val_hash] = 0;
-		hash->deleted[val_hash] = 1;
-		hash->full++;
+void removeIntOpenHashSet(IntOpenHashSet* set, int val) {
+	int val_hash = computeHash(set->param_mul,
+														 set->param_add,
+														 set->size,
+														 val);
+	while (!(set->is_free[val_hash]) && set->values[val_hash] != val) {
+		val_hash = (val_hash + 1) % set->size;
+	}
+	if (set->values[val_hash] == val) {
+		set->is_free[val_hash] = 1;
+		set->count--;
 	}
 }
 
-int searchIntOpenHashTable (IntOpenHashTable hash, int val) {
-	int val_hash = getOpenHash(hash, val);
-	while ((hash.free[val_hash] == 1 || hash.deleted[val_hash] == 1) && hash.table[val_hash] != val)
-		val_hash = (val_hash + 1) % hash.size;
-	if (hash.table[val_hash] == val)
-		return 1;
-	else
-		return 0;
+int searchIntOpenHashSet(IntOpenHashSet* set, int val) {
+	int val_hash = computeHash(set->param_mul,
+														 set->param_add,
+														 set->size,
+														 val);
+	while (!(set->is_free[val_hash])) {
+		if (set->values[val_hash] == val) {
+			return 1;
+		}
+		val_hash = (val_hash + 1) % set->size;
+	}
+	return 0;
 }
 
-void dumpIntOpenHashTable (IntOpenHashTable hash, char *name) {
-	int i;
-	printf("%s {\n", name);
-	for (i = 0; i < hash.size; i++)
-		if (hash.free[i] != 0 && hash.deleted[i] != 1)
-			printf("\t%d\t=>\t%d\n", i, hash.table[i]);
-		else
-			printf("\t%d\t=>\tNULL\n", i);
-	printf("}\n");
+void dumpIntOpenHashSet(IntOpenHashSet* set) {
+	int last = set->size - 1;
+	while (set->is_free[last]) {
+		last--;
+	}
+	printf("{");
+	for (int i = 0; i < set->size; i++) {
+		if (!(set->is_free[i])) {
+			printf("%d", set->values[i]);
+			if (i != last) {
+				printf(", ");
+			}
+		}
+	}
+	printf("}");
 }
 
-typedef struct intChainingHashTable {
-	IntList *table;
-	int size;
-	int a;
-	int b;
-} IntChainingHashTable;
-
-IntChainingHashTable newIntChainingHashTable (int n) {
-	int i;
-	IntChainingHashTable new;
-	new.size = n * 2;
-	new.table = (IntList*) malloc(sizeof(IntList) * new.size);
-	for (i = 0; i < 2 * n; i++)
-		new.table[i] = NULL;
+IntChainingHashSet* newIntChainingHashSet(int size) {
+	IntChainingHashSet* set = (IntChainingHashSet*)malloc(sizeof(IntChainingHashSet));
+	set->size = size * 2;
+	set->lists = (IntList*)malloc(sizeof(IntList) * set->size);
+	for (int i = 0; i < set->size; i++) {
+		set->lists[i] = NULL;
+	}
 	srand(time(NULL));
-	new.a = rand() % 10000;
-	new.b = rand() % 10000;
-	return new;
+	set->param_mul = rand() % 10000;
+	set->param_add = rand() % 10000;
+	return set;
 }
 
-int getChainingHash (IntChainingHashTable hash, int val) {
-	return ((hash.a * val + hash.b) % PRIME) % hash.size;
-}
-
-void insertIntChainingHashTable (IntChainingHashTable *hash, int val) {
-	int hash_val = getChainingHash(*hash, val);
-	IntList l = hash->table[hash_val];
-	while (l != NULL && l->next != NULL && l->info != val)
-		l = l->next;
-	if (l == NULL)
-		hash->table[hash_val] = insertIntListTail(hash->table[hash_val], val);
-	else if (l->info != val)
-		l = insertIntListTail(hash->table[hash_val], val);
-}
-
-void removeIntChainingHashTable (IntChainingHashTable *hash, int val) {
-	int hash_val = getChainingHash(*hash, val);
-	hash->table[hash_val] = removeIntList(hash->table[hash_val], val);
-}
-
-int searchIntChainingHashTable (IntChainingHashTable hash, int val) {
-	int hash_val = getChainingHash(hash, val);
-	IntList = searchIntList(hash.table[hash_val], n);
-	if (IntList)
-		return 1;
-	else
-		return 0;
-}
-
-void dumpIntChainingHashTable (IntChainingHashTable hash, char *name) {
-	int i;
-	printf("%s {\n", name);
-	for (i = 0; i < hash.size; i++) {
-		printf("\t%d\t=>\t", i);
-		printIntList(hash.table[i]);
+void freeChainingHashSet(IntChainingHashSet* set) {
+	for (int i = 0; i < set->size; i++) {
+		if (set->lists[i]) {
+			free(set->lists[i]);
+		}
 	}
-	printf("}\n");
+	free(set);
+}
+
+void addIntChainingHashSet(IntChainingHashSet* set, int val) {
+	int val_hash = computeHash(set->param_mul,
+														 set->param_add,
+														 set->size,
+														 val);
+	if (!searchIntList(set->lists[val_hash], val)) {
+		set->lists[val_hash] = insertIntListHead(set->lists[val_hash], val);
+	}
+}
+
+void removeIntChainingHashSet(IntChainingHashSet* set, int val) {
+	int val_hash = computeHash(set->param_mul,
+														 set->param_add,
+														 set->size,
+														 val);
+	set->lists[val_hash] = removeIntListByVal(set->lists[val_hash], val);
+}
+
+int searchIntChainingHashSet(IntChainingHashSet* set, int val) {
+	int val_hash = computeHash(set->param_mul,
+														 set->param_add,
+														 set->size,
+														 val);
+	return searchIntList(set->lists[val_hash], val) != NULL;
+}
+
+void dumpIntChainingHashSet(IntChainingHashSet* set) {
+	int last = set->size - 1;
+	while (!(set->lists[last])) {
+		last--;
+	}
+	printf("{");
+	for (int i = 0; i < set->size; i++) {
+		if (set->lists[i]) {
+			printIntList(set->lists[i]);
+			if (i != last) {
+				printf(", ");
+			}
+		}
+	}
+	printf("}");
 }

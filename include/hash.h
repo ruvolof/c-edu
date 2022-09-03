@@ -1,28 +1,46 @@
-#ifndef hash.h
-#define hash.h
+#ifndef hash_lib
+#define hash_lib
 
-typedef struct intOpenHashTable IntOpenHashTable;
+#include "../include/list.h"
 
-IntOpenHashTable newIntOpenHashTable (int n);
+typedef struct intOpenHashSet {
+	int* values;
+	int* is_free;
+	int param_mul;
+	int param_add;
+	int size;
+	int count;
+} IntOpenHashSet;
 
-void insertIntOpenHashTable (IntOpenHashTable *hash, int val);
+typedef struct intChainingHashSet {
+	IntList* lists;
+	int size;
+	int param_mul;
+	int param_add;
+} IntChainingHashSet;
 
-void removeIntOpenHashTable (IntOpenHashTable *hash, int val)
+extern IntOpenHashSet* newIntOpenHashSet(int size);
 
-int searchIntOpenHashTable (IntOpenHashTable hash, int val);
+extern void freeOpenHashSet(IntOpenHashSet* set);
 
-void dumpIntOpenHashTable (IntOpenHashTable hash, char *name);
+extern void addIntOpenHashSet(IntOpenHashSet* set, int val);
 
-typedef struct intChainingHashTable IntChainingHashTable;
+extern void removeIntOpenHashSet(IntOpenHashSet* set, int val);
 
-IntChainingHashTable newIntChainingHashTable (int n);
+extern int searchIntOpenHashSet(IntOpenHashSet* set, int val);
 
-void insertIntChainingHashTable (IntChainingHashTable *hash, int val);
+extern void dumpIntOpenHashSet(IntOpenHashSet* set);
 
-void removeIntChainingHashTable (IntChainingHashTable *hash, int val);
+extern IntChainingHashSet* newIntChainingHashSet(int size);
 
-int searchIntChainingHashTable (IntChainingHashTable hash, int val);
+extern void freeChainingHashSet(IntChainingHashSet* set);
 
-void dumpIntChainingHashTable (IntChainingHashTable hash, char *name);
+extern void addIntChainingHashSet(IntChainingHashSet* set, int val);
+
+extern void removeIntChainingHashSet(IntChainingHashSet* set, int val);
+
+extern int searchIntChainingHashSet(IntChainingHashSet* set, int val);
+
+extern void dumpIntChainingHashSet(IntChainingHashSet* set);
 
 #endif
