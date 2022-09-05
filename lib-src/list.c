@@ -80,12 +80,12 @@ IntList removeIntListByIndex(IntList list, int index) {
 
 void printIntList(IntList list) {
 	printf("[");
-	while (list->next){
-		printf("%d, ", list->val);
-		list = list->next;
-	}
-	if (list) {
+	while (list){
 		printf("%d", list->val);
+		if (list->next) {
+			printf(", ");
+		}
+		list = list->next;
 	}
 	printf("]");
 }
@@ -114,4 +114,5 @@ void freeList(IntList list) {
 		return;
 	}
 	freeList(list->next);
+	free(list);
 }

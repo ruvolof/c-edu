@@ -73,7 +73,7 @@ int main () {
 	printf("OK.\n");
 
 	freeOpenHashSet(open_set);
-	freeChainingHashSet(chain_set);
+	freeIntChainingHashSet(chain_set);
 
 	return 0;
 }

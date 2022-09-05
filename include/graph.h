@@ -1,20 +1,32 @@
-#ifndef graph
-#define graph
+#ifndef graph_lib
+#define graph_lib
 
-typedef struct graphIntNode GraphIntNode;
+#include "../include/hash.h"
+#include "../include/list.h"
 
-typedef struct intGraph IntGraph;
+typedef struct intGraphNode {
+	int label;
+	IntList adjacency_list;
+} IntGraphNode;
 
-IntGraph newIntGraph ();
+typedef struct intGraph {
+	int node_count;
+	int arc_count;
+	IntGraphNode** nodes;
+} IntGraph;
 
-void addIntGraphNode (IntGraph *g);
+extern IntGraph* newIntGraph();
 
-void addIntGraphArc (IntGraph *g, int src, int dst);
+extern void freeIntGraph(IntGraph* graph);
 
-void dumpIntGraph (IntGraph g, char *name);
+extern void addIntGraphNode(IntGraph* graph, int label);
 
-void BFSIntGraph (IntGraph g, int src);
+extern void addIntGraphArc(IntGraph* graph, int src, int dst, int bidir);
 
-void DFSIntGraph (IntGraph g);
+extern void dumpIntGraph(IntGraph* graph);
+
+extern void BFSIntGraph(IntGraph* graph, int src);
+
+extern void DFSIntGraph(IntGraph* graph, int src, IntChainingHashSet* visited);
 
 #endif

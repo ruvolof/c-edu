@@ -33,7 +33,7 @@ extern void dumpIntOpenHashSet(IntOpenHashSet* set);
 
 extern IntChainingHashSet* newIntChainingHashSet(int size);
 
-extern void freeChainingHashSet(IntChainingHashSet* set);
+extern void freeIntChainingHashSet(IntChainingHashSet* set);
 
 extern void addIntChainingHashSet(IntChainingHashSet* set, int val);
 

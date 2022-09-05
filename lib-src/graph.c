@@ -1,110 +1,109 @@
-#include "queue.h"
-#include "stack.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include "../include/graph.h"
+#include "../include/list.h"
+#include "../include/hash.h"
+#include "../include/queue.h"
 
-typedef struct graphIntNode {
-	int out;
-	IntList adjacency;
-} *IntGraphNode;
-
-typedef struct intGraph {
-	int n;
-	int a;
-	IntGraphNode *nodes;
-} *IntGraph;
-
-IntGraph newIntGraph () {
-	IntGraph new = (IntGraph) malloc(sizeof(IntGraph));
-	new->n = 0;
-	new->a = 0;
+IntGraph* newIntGraph() {
+	IntGraph* new = (IntGraph*)malloc(sizeof(IntGraph));
+	new->node_count = 0;
+	new->arc_count = 0;
 	new->nodes = NULL;
 	return new;
 }
 
-void addIntGraphNode (IntGraph *g) {
-	(*g)->n++;
-	if ((*g)->nodes == NULL)
-		(*g)->nodes = (IntGraphNode*) malloc(sizeof(IntGraphNode) * (*g)->n);
-	else
-		(*g)->nodes = (IntGraphNode*) realloc((*g)->nodes, sizeof(IntGraphNode) * (*g)->n);
-	(*g)->nodes[(*g)->n - 1] = (IntGraphNode) malloc(sizeof(IntGraphNode));
-	(*g)->nodes[(*g)->n - 1]->adjacency = NULL;
+void freeIntGraph(IntGraph* graph) {
+	for (int i = 0; i < graph->node_count; i++) {
+		freeList(graph->nodes[i]->adjacency_list);
+		free(graph->nodes[i]);
+	}
+	free(graph);
 }
 
-void addIntGraphArc (IntGraph *g, int src, int dst) {
-	if (src <= (*g)->n - 1 && dst <= (*g)->n - 1 && src != dst) {
-		IntList l = (*g)->nodes[src]->adjacency;
-		while (l != NULL && l->next != NULL && l->info != dst)
-			l = l->next;
-		if (l == NULL) {
-			(*g)->a++;
-			(*g)->nodes[src]->adjacency = insertIntListTail((*g)->nodes[src]->adjacency, dst);
+void addIntGraphNode(IntGraph* graph, int label) {
+	graph->node_count++;
+	if (graph->nodes) {
+		graph->nodes = (IntGraphNode**)realloc(graph->nodes,
+																				   sizeof(IntGraphNode*) * graph->node_count);
+	}
+	else {
+		graph->nodes = (IntGraphNode**)malloc(sizeof(IntGraphNode*));
+	}
+	int last = graph->node_count - 1;
+	graph->nodes[last] = (IntGraphNode*)malloc(sizeof(IntGraphNode));
+	graph->nodes[last]->label = label;
+	graph->nodes[last]->adjacency_list = NULL;
+}
+
+IntGraphNode* findIntGraphNode(IntGraph* graph, int label) {
+	IntGraphNode* found = NULL;
+	int i = 0;
+	while (!found && i < graph->node_count) {
+		if (graph->nodes[i]->label == label) {
+			found = graph->nodes[i];
 		}
-		else if (l->info != dst) {
-			(*g)->a++;
-			l = insertIntListTail(l, dst);
+		i++;
+	}
+	return found;
+}
+
+void addIntGraphArc(IntGraph* graph, int src, int dst, int bidir) {
+	IntGraphNode* src_node = findIntGraphNode(graph, src);
+	IntGraphNode* dst_node = findIntGraphNode(graph, dst);
+	if (src_node && dst_node) {
+		src_node->adjacency_list = insertIntListHead(src_node->adjacency_list, dst);
+		if (bidir) {
+			dst_node->adjacency_list = insertIntListHead(dst_node->adjacency_list, src);
 		}
 	}
 }
 
-void dumpIntGraph (IntGraph g, char *name) {
-	printf("Graph %s (\n", name);
-		if (g == NULL)
-			printf("\tVOID\n)");
-		else {
-			int i;
-			printf("\t#Node\t=\t%d\n", g->n);
-			printf("\t#Arc\t=\t%d\n", g->a);
-			printf("\tAdjacency Lists:\n");
-			for (i = 0; i < g->n; i++) {
-				printf("\t%d\t=>\t", i);
-				printIntList(g->nodes[i]->adjacency);
+void dumpIntGraph (IntGraph* graph) {
+	for (int i = 0; i < graph->node_count; i++) {
+		printf("%d -> ", graph->nodes[i]->label);
+		printIntList(graph->nodes[i]->adjacency_list);
+		printf("\n");
+	}	
+}
+
+void BFSIntGraph(IntGraph* graph, int src) {
+	IntChainingHashSet* visited = newIntChainingHashSet(graph->node_count * 10);
+	IntQueue queue = NULL;
+	pushIntQueue(&queue, src);
+	while (!isEmptyQueue(queue)) {
+		IntPtr current_node = popIntQueue(&queue);
+		if (!searchIntChainingHashSet(visited, *current_node)) {
+			printf("%d-", *current_node);
+			addIntChainingHashSet(visited, *current_node);
+			IntList neighbour = graph->nodes[*current_node]->adjacency_list;
+			while (neighbour) {
+				pushIntQueue(&queue, neighbour->val);
+				neighbour = neighbour->next;
 			}
 		}
-	printf(")\n");
+	}
+	freeIntChainingHashSet(visited);
 }
 
-void BFSIntGraph (IntGraph g, int src) {
-	IntList queue = NULL, temp = NULL, u = NULL;
-	int *visited, i;
-	visited = (int*) malloc(sizeof(int) * g->n);
-	for (i = 0; i < g->n; i++)
-		visited[i] = 0;
-	queue = enqueueQueueIntList(queue, src);
-	while (!emptyQueueIntList(queue)) {
-		queue = dequeueQueueIntList(queue, &u);
-		if (!visited[u->info]) {
-			visited[u->info] = 1;
-			printf("%d ", u->info);
-			temp = g->nodes[u->info]->adjacency;
-			while (temp != NULL) {
-				queue = enqueueQueueIntList(queue, temp->info);
-				temp = temp->next;
-			}
+void DFSIntGraph(IntGraph* graph, int src, IntChainingHashSet* visited) {
+	int free_visited = 0;
+	if (!visited) {
+		visited = newIntChainingHashSet(graph->node_count * 10);
+		free_visited = 1;
+	}
+	addIntChainingHashSet(visited, src);
+	printf("%d-", src);
+	IntList src_neighbour = graph->nodes[src]->adjacency_list;
+	while (src_neighbour) {
+		if (!searchIntChainingHashSet(visited, src_neighbour->val)) {
+			DFSIntGraph(graph, src_neighbour->val, visited);
 		}
+		src_neighbour = src_neighbour->next;
 	}
-	printf("\n");	
-}
-
-void DFSIntGraphRecursion(IntGraph g, int src, int *visited) {
-	IntList temp = g->nodes[src]->adjacency;
-	visited[src] = 1;
-	printf("%d ", src);
-	while (temp != NULL) {
-		if (!visited[temp->info])
-			DFSIntGraphRecursion(g, temp->info, visited);
-		temp = temp->next;
+	if (free_visited) {
+		freeIntChainingHashSet(visited);
 	}
-}
-
-void DFSIntGraph (IntGraph g) {
-	int *visited, i;
-	visited = (int*) malloc(sizeof(int) * g->n);
-	for (i = 0; i < g->n; i++)
-		visited[i] = 0;
-	for (i = 0; i < g->n; i++) {
-		if (!visited[i]) DFSIntGraphRecursion(g, i, visited);
-	}
-	printf("\n");
 }
 	
 

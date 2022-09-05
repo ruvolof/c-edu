@@ -76,6 +76,15 @@ obj/hash_test.o : test-src/hash_test.c obj/hash.o
 hash_test : obj/hash_test.o obj/hash.o obj/list.o
 	$(CC) $(CFLAGS) -o bin/$@ $^
 
+obj/graph.o : lib-src/graph.c include/graph.h
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+obj/graph_test.o : test-src/graph_test.c obj/graph.o
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+graph_test : obj/graph_test.o obj/graph.o obj/list.o obj/hash.o obj/queue.o
+	$(CC) $(CFLAGS) -o bin/$@ $^
+
 clean :
 	rm -rv bin/*
 	rm -rv obj/*

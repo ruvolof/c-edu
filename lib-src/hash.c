@@ -105,10 +105,10 @@ IntChainingHashSet* newIntChainingHashSet(int size) {
 	return set;
 }
 
-void freeChainingHashSet(IntChainingHashSet* set) {
+void freeIntChainingHashSet(IntChainingHashSet* set) {
 	for (int i = 0; i < set->size; i++) {
 		if (set->lists[i]) {
-			free(set->lists[i]);
+			freeList(set->lists[i]);
 		}
 	}
 	free(set);
