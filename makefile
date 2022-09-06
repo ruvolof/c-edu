@@ -10,14 +10,14 @@ obj/dynamic-test.o : test-src/dynamic-test.c include/dynamic.h
 dynamic-test : obj/dynamic-test.o obj/dynamic.o obj/array.o
 	$(CC) $(CFLAGS) -o bin/$@ $^
 
-sort-test : obj/sort-test.o obj/sort.o obj/heap.o obj/array.o
+obj/sort.o : lib-src/sort.c include/sort.h
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+obj/sort_test.o : test-src/sort_test.c obj/sort.o
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+sort_test : obj/sort_test.o obj/sort.o
 	$(CC) $(CFLAGS) -o bin/$@ $^
-
-obj/sort-test.o : test-src/sort-test.c include/sort.h include/array.h
-	$(CC) $(CFLAGS) -o $@ -c $<
-
-obj/sort.o : lib-src/sort.c obj/heap.o include/sort.h include/heap.h
-	$(CC) $(CFLAGS) -o $@ -c $<
 
 obj/heap.o : lib-src/heap.o include/heap.h
 	$(CC) $(CFLAGS) -o $@ -c $<

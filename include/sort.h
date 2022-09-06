@@ -1,14 +1,14 @@
-#ifndef sort
-#define sort
+#ifndef sort_lib
+#define sort_lib
 
-void IntArrayInsSort (int *a, int dim);
+extern int isIntArraySorted(int* numbers, int length);
 
-void IntArraySelSort (int *a, int dim);
+extern void intArrayInsertionSort(int* numbers, int length);
 
-void intArrayMergeSort (int *a, int left, int right);
+extern void intArraySelectionSort(int* numbers, int length);
 
-void intArrayQuickSort (int *a, int left, int right);
+extern void intArrayMergeSort(int* numbers, int left, int right);
 
-void intArrayHeapSort (int **a, int dim);
+extern void intArrayQuickSort(int* numbers, int left, int right);
 
 #endif
