@@ -1,6 +1,8 @@
 #ifndef sort_lib
 #define sort_lib
 
+extern void swapInt(int* a, int* b);
+
 extern int isIntArraySorted(int* numbers, int length);
 
 extern void intArrayInsertionSort(int* numbers, int length);

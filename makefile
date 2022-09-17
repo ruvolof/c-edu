@@ -19,8 +19,14 @@ obj/sort_test.o : test-src/sort_test.c obj/sort.o
 sort_test : obj/sort_test.o obj/sort.o
 	$(CC) $(CFLAGS) -o bin/$@ $^
 
-obj/heap.o : lib-src/heap.o include/heap.h
+obj/heap.o : lib-src/heap.c include/heap.h include/sort.h
 	$(CC) $(CFLAGS) -o $@ -c $<
+
+obj/heap_test.o : test-src/heap_test.c obj/heap.o
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+heap_test : obj/heap_test.o obj/heap.o obj/sort.o
+	$(CC) $(CFLAGS) -o bin/$@ $^
 
 obj/array.o : lib-src/array.c include/array.h
 	$(CC) $(CFLAGS) -o $@ -c $<

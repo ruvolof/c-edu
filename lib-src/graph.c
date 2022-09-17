@@ -59,7 +59,7 @@ void addIntGraphArc(IntGraph* graph, int src, int dst, int bidir) {
 	}
 }
 
-void dumpIntGraph (IntGraph* graph) {
+void dumpIntGraph(IntGraph* graph) {
 	for (int i = 0; i < graph->node_count; i++) {
 		printf("%d -> ", graph->nodes[i]->label);
 		printIntList(graph->nodes[i]->adjacency_list);

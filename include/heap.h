@@ -1,20 +1,25 @@
-#ifndef heap
-#define heap
+#ifndef heap_lib
+#define heap_lib
 
-typedef struct intMinHeap IntMinHeap;
+#include "../include/stack.h"
 
-IntMinHeap newIntMinHeap (int dim);
+typedef struct intMinHeap {
+	int* elements;
+	int size;
+} IntMinHeap;
 
-int emptyHeap (IntMinHeap h);
+extern IntMinHeap* newIntMinHeap(int size);
 
-int firstHeap (IntMinHeap h);
+extern void freeMinHeap(IntMinHeap* heap);
 
-void reorganizeIntMinHeap (IntMinHeap *h, int index);
+extern int isEmptyHeap(IntMinHeap* heap);
 
-void enqueueIntMinHeap (IntMinHeap *h, int val);
+extern IntPtr topIntMinHeap(IntMinHeap* heap);
 
-void dequeIntMinHeap (IntMinHeap *h, int *i);
+extern void pushIntMinHeap(IntMinHeap* heap, int val);
 
-IntMinHeap arrayToIntMinHeap (int *a, int dim);
+extern IntPtr popIntMinHeap(IntMinHeap* heap);
+
+extern IntMinHeap* intArrayToIntMinHeap(int* numbers, int size);
 
 #endif
